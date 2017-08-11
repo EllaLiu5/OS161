@@ -1,0 +1,23 @@
+Place your design document here.
+Part1.
+The critical area here is counter, in order to protect this area, lock_c is created before forking multiple threads. Then each time, a thread need to require a lock before it can get access to counter, and after running, it releases lock_c.
+
+Part2.
+To prevent deadlock, a circle of locks need to be omitted. By making a chain of locks in fixed order, a thread have to get the former lock before it can try the next one, thus deadlock is prevented. So change both functions¡¯ lock sequence to lock_a then lock_b fixed the deadlock problem.
+
+Part3 
+The critical section is the data buffer.
+When two producer want to send data at same time, the later's data one may overwrite previous one's. 
+Two cosumers may get same data.
+If only use sample lock, the thread may get wakeup signal before it sleep. It will never wake up.
+
+We make three semaphores named "mutex, empty and full" to resolve this problem. When a producer put the data to buffer, empty semaphore will mins 1 and mutex locker. Locked to make sure other thread can not access the critical sesction. 
+empty <= 0 means there is no empty buffer, the producer will sleep. 
+After it add data to the buffer, full semaphore plus one, so that consumer could decide to sleep or not. 
+ 
+Part4
+we creat three critical sections: ship buffer, order buffer and tints.
+Customers send order and get their paint. Staff get order, mix paint and put paint on shipment buffer. These activities occur on same time.
+We use an array to store shipment information, and create another an array with two pointer to store order data. For the two pointer, one stores first empty index. Another stores first full index.
+Each paint bin has a locker which could ensure they won't be unsed at same time.
+Shipment buffer and order buffer use semaphore to ensure correct concurrency.
